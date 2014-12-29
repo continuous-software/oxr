@@ -4,7 +4,7 @@
   "description": "wrapper around open exchange rate using promise",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node node_modules/mocha/bin/_mocha -R spec test"
   },
   "keywords": [
     "promise",
@@ -12,6 +12,10 @@
     "rate",
     "currency"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/continuous-software/open-exchange-rate-promise.git"
+  },
   "author": "Laurent Renard",
   "license": "MIT",
   "dependencies": {
