@@ -1,0 +1,24 @@
+{
+  "name": "open-exchange-rate-promise",
+  "version": "0.1.0",
+  "description": "wrapper around open exchange rate using promise",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "promise",
+    "exchange",
+    "rate",
+    "currency"
+  ],
+  "author": "Laurent Renard",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^2.5.1",
+    "request": "^2.51.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.1.0"
+  }
+}
