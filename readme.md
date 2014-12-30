@@ -37,7 +37,7 @@ If the remote service returns an error, the promise is rejected with an instance
 var oxr=require('open-exchange-rates-promise').factory;
 var OxrError=require('open-exchange-rates-promise').OxrError;
 
-var service=oxr({appId:'wrong api key});
+var service=oxr({appId:'wrong api key'});
 
 service.latest()
   .then(function(result){
