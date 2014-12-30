@@ -20,5 +20,6 @@ module.exports = {
     extend(service, options);
 
     return service;
-  }
+  },
+  cache: require('./lib/cache.js')
 };
