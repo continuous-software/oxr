@@ -1,5 +1,5 @@
 {
-  "name": "open-exchange-rate-promise",
+  "name": "open-exchange-rates-promise",
   "version": "0.1.0",
   "description": "wrapper around open exchange rate using promise",
   "main": "index.js",
