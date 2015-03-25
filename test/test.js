@@ -140,7 +140,7 @@ describe('Cache latest', function () {
 
   it('should cache the value from the remote service', function (done) {
 
-    var timestamp = Date.now()-1000;
+    var timestamp = Date.now() - 1000;
 
     var body = {
       "disclaimer": "Exchange rates provided by [...]",
@@ -175,7 +175,7 @@ describe('Cache latest', function () {
   });
 
   it('should get the value from the cache if it has not expired', function (done) {
-    var timestamp = Date.now()-1000;
+    var timestamp = Date.now() - 1000;
 
     dummyStore.value = {
       "disclaimer": "Exchange rates provided by [...]",
@@ -204,7 +204,7 @@ describe('Cache latest', function () {
   });
 
   it('should refresh the value of the cache if the value has expired', function (done) {
-    var timestamp = Date.now()-1000;
+    var timestamp = Date.now() / 1000 - 1000;
 
     var body = {
       "disclaimer": "Exchange rates provided by [...]",
@@ -241,7 +241,7 @@ describe('Cache latest', function () {
   });
 
   it('should default to cache if an error is returned from the remote', function (done) {
-    var timestamp = Date.now()-1000;
+    var timestamp = Date.now() / 1000 - 1000;
 
     var body = {
       "disclaimer": "Exchange rates provided by [...]",
