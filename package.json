@@ -4,7 +4,7 @@
   "description": "wrapper around open exchange rate using promise",
   "main": "index.js",
   "scripts": {
-    "test": "node node_modules/mocha/bin/_mocha -R spec test"
+    "test": "node node_modules/mocha/bin/_mocha -R spec test -t 10000"
   },
   "keywords": [
     "promise",
