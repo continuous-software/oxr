@@ -1,4 +1,4 @@
-![Build Status](https://img.shields.io/travis/continuous-software/oxr.svg) ![Coverage Status](https://img.shields.io/coveralls/continuous-software/oxr.svg) ![Dependencies Status](https://img.shields.io/david/continuous-software/oxr.svg)
+![Build Status](https://img.shields.io/travis/continuous-software/oxr.svg) ![Coverage Status](https://img.shields.io/coveralls/continuous-software/oxr.svg) ![Dependencies Status](https://img.shields.io/david/continuous-software/oxr.svg) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
 
 # Open eXchange Rates
 
@@ -94,6 +94,10 @@ service.latest().catch(function (error) {
   assert.equal(error.description, 'Invalid App ID provided - please sign up at https://openexchangerates.org/signup, or contact support@openexchangerates.org. Thanks!')
 })
 ```
+
+## Contributing
+
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
 ## License
 
