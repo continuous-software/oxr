@@ -158,7 +158,7 @@ describe('Cache latest', function () {
       }
     }
 
-    var api = nock('http://openexchangerates.org')
+    var api = nock(service.protocol + '://openexchangerates.org')
       .get('/api/latest.json?app_id=' + service.appId)
       .reply(200, body)
 
@@ -167,7 +167,6 @@ describe('Cache latest', function () {
     }, service)
 
     service.latest().then(function (val) {
-      console.log(body)
       assert.equal(val.timestamp, body.timestamp)
       assert.equal(dummyStore.value.timestamp, body.timestamp)
       api.done()
@@ -231,7 +230,7 @@ describe('Cache latest', function () {
 
     dummyStore.value = body
 
-    var api = nock('http://openexchangerates.org')
+    var api = nock(service.protocol + '://openexchangerates.org')
       .get('/api/latest.json?app_id=' + service.appId)
       .reply(200, body)
 
@@ -272,7 +271,7 @@ describe('Cache latest', function () {
 
     dummyStore.value = body
 
-    var api = nock('http://openexchangerates.org')
+    var api = nock(service.protocol + '://openexchangerates.org')
       .get('/api/latest.json?app_id=' + service.appId)
       .reply(200, {
         error: true,
