@@ -1,7 +1,7 @@
 {
   "name": "oxr",
   "version": "1.0.0",
-  "description": "wrapper around open exchange rate using promise",
+  "description": "Advanced Node.js wrapper for the Open Exchange Rates API",
   "main": "index.js",
   "scripts": {
     "test": "node node_modules/standard/bin/cmd.js && node node_modules/mocha/bin/_mocha -R spec test -t 10000"
