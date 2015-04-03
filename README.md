@@ -17,12 +17,12 @@ Use the factory to create any number of client instances using your API keys
 var oxr = require('oxr')
 var service = oxr.factory({
   appId: process.env.OXR_APP_ID || '<YOUR_APP_ID>'
-});
+})
 
 service.latest().then(function(result){
   var rates = result.rates
-  console.log(rates);
-});
+  console.log(rates)
+})
 
 ```
 
@@ -54,10 +54,10 @@ You can also decorate your service with a cache.
 It must implement a **get** and a **put** functions which return Promises.
 
  ```javascript
-var oxr = require('oxr');
+var oxr = require('oxr')
 var service = oxr.factory({
   appId: process.env.OXR_APP_ID || '<YOUR_APP_ID>'
-});
+})
 
 service = oxr.cache({
   store: {
@@ -70,7 +70,7 @@ service = oxr.cache({
     }
   },
   ttl: 7 * 24 * 1000 * 3600
-}, service);
+}, service)
 ```
 
 If the timestamp of the cached rates plus its time to live (ttl) in ms is higher than the current timestamp, the service will call the remote api, otherwise, it will take the value from the cache.  
