@@ -28,9 +28,9 @@ service.latest().then(function(result){
 
 ## Service API
 
-* [latest(query, options)]()
-* [historical(date, query, options)]()
-* [currencies(query, options)]()
+* [latest(query, options)](https://github.com/continuous-software/oxr#latestquery-options)
+* [historical(date, query, options)](https://github.com/continuous-software/oxr#historicaldate-query-options)
+* [currencies(query, options)](https://github.com/continuous-software/oxr#currenciesquery-options)
 
 ### latest(query, options)  
 **@params query** *(optional)* - A map of query string parameters to pass to the http call.  
