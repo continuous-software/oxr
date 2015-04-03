@@ -1,20 +1,20 @@
 ![Build Status](https://img.shields.io/travis/continuous-software/open-exchange-rate-promise.svg) ![Coverage Status](https://img.shields.io/coveralls/continuous-software/open-exchange-rate-promise.svg) ![Dependencies Status](https://img.shields.io/david/continuous-software/open-exchange-rate-promise.svg)
 
-# Open Exchange Rates +
+# Open eXchange Rates
 
 A Node.js client for the [Open Exchange Rates](https://openexchangerates.org) API.  
 Our client is designed to return Promises and provide a flexible caching capability.
 
 ## Install
 
-`npm install --save open-exchange-rates-promise`
+`npm install --save oxr`
 
 ## Usage
 
 Use the factory to create any number of client instances using your API keys
 
 ```javascript
-var oxr = require('open-exchange-rates-promise').factory
+var oxr = require('oxr').factory
 var service = oxr({
   appId: process.env.OXR_APP_ID || '<YOUR_APP_ID>'
 });
@@ -32,8 +32,8 @@ service.latest().then(function(result){
 If the remote service returns an error, Promises are rejected with an instance of OxrError.
 
 ```javascript
-var oxr = require('open-exchange-rates-promise').factory
-var OxrError = require('open-exchange-rates-promise').OxrError
+var oxr = require('oxr').factory
+var OxrError = require('oxr').OxrError
 var service = oxr({
   appId: '<WRONG_APP_ID>'
 })
@@ -74,7 +74,7 @@ You can also decorate your service with a cache.
 It must implement a **get** and a **put** functions which return Promises.
 
  ```javascript
-var oxr = require('open-exchange-rates-promise');
+var oxr = require('oxr');
 var service = oxr.factory({
   appId: process.env.OXR_APP_ID || '<YOUR_APP_ID>'
 });

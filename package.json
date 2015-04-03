@@ -1,5 +1,5 @@
 {
-  "name": "open-exchange-rates-promise",
+  "name": "oxr",
   "version": "0.1.2",
   "description": "wrapper around open exchange rate using promise",
   "main": "index.js",
@@ -11,11 +11,12 @@
     "exchange",
     "rate",
     "currency",
-    "money"
+    "money",
+    "oxr"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/continuous-software/open-exchange-rate-promise.git"
+    "url": "https://github.com/continuous-software/oxr.git"
   },
   "author": "Laurent Renard",
   "license": "MIT",
