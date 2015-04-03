@@ -1,4 +1,4 @@
-![Build Status](https://img.shields.io/travis/continuous-software/open-exchange-rate-promise.svg) ![Coverage Status](https://img.shields.io/coveralls/continuous-software/open-exchange-rate-promise.svg) ![Dependencies Status](https://img.shields.io/david/continuous-software/open-exchange-rate-promise.svg)
+![Build Status](https://img.shields.io/travis/continuous-software/oxr.svg) ![Coverage Status](https://img.shields.io/coveralls/continuous-software/oxr.svg) ![Dependencies Status](https://img.shields.io/david/continuous-software/oxr.svg)
 
 # Open eXchange Rates
 
