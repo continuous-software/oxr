@@ -1,266 +1,255 @@
-var conf = require('../conf.js');
-var oxr = require('../index.js');
-var assert = require('assert');
-var cache = require('../lib/cache.js');
-var Promise = require('bluebird');
-var nock = require('nock');
+'use strict'
+
+/* global describe, beforeEach, it, afterEach */
+
+var conf = require('../conf.js')
+var oxr = require('../index.js')
+var assert = require('assert')
+var cache = require('../lib/cache.js')
+var Promise = require('bluebird')
+var nock = require('nock')
 
 describe('Open exchange rate promise service', function () {
-
-  var service;
+  var service
 
   beforeEach(function () {
-    service = oxr.factory(conf);
-  });
+    service = oxr.factory(conf)
+  })
 
   it('should get the latest rates', function (done) {
-
     service.latest()
       .then(function (results) {
-        assert(results.disclaimer);
-        assert(results.license);
-        assert(results.base);
-        assert(results.rates);
-        assert(results.timestamp);
-        done();
-      });
-  });
+        assert(results.disclaimer)
+        assert(results.license)
+        assert(results.base)
+        assert(results.rates)
+        assert(results.timestamp)
+        done()
+      })
+  })
 
   it('parse API error response', function (done) {
     service.latest({app_id: 'alsdkfjs'})
       .then(function () {
-        throw new Error('should not get here');
+        throw new Error('should not get here')
       }, function (err) {
-        assert(err instanceof oxr.OxrError);
-        assert.equal(err.status, 401);
-        assert.equal(err.message, 'invalid_app_id');
-        assert.equal(err.description, 'Invalid App ID provided - please sign up at https://openexchangerates.org/signup, or contact support@openexchangerates.org. Thanks!');
-        done();
-      });
-  });
+        assert(err instanceof oxr.OxrError)
+        assert.equal(err.status, 401)
+        assert.equal(err.message, 'invalid_app_id')
+        assert.equal(err.description, 'Invalid App ID provided - please sign up at https://openexchangerates.org/signup, or contact support@openexchangerates.org. Thanks!')
+        done()
+      })
+  })
 
   it('should get historical data with a date object', function (done) {
     service.historical(new Date(Date.now() - 24 * 3600 * 7))
       .then(function (results) {
-        assert(results.disclaimer);
-        assert(results.license);
-        assert(results.base);
-        assert(results.rates);
-        done();
-      });
-  });
+        assert(results.disclaimer)
+        assert(results.license)
+        assert(results.base)
+        assert(results.rates)
+        done()
+      })
+  })
 
   it('should get historical data with a string', function (done) {
     service.historical('2013-12-29')
       .then(function (results) {
-        assert(results.disclaimer);
-        assert(results.license);
-        assert(results.base);
-        assert(results.rates);
-        done();
-      });
-  });
+        assert(results.disclaimer)
+        assert(results.license)
+        assert(results.base)
+        assert(results.rates)
+        done()
+      })
+  })
 
   it('should get the list of currencies', function (done) {
     service.currencies()
       .then(function (results) {
-        assert(results['USD']);
-        done();
-      });
-  });
+        assert(results['USD'])
+        done()
+      })
+  })
 
-});
+})
 
 describe('Cache latest', function () {
-
-  var service;
-  var dummyStore;
+  var service
+  var dummyStore
 
   beforeEach(function () {
-    service = oxr.factory(conf);
+    service = oxr.factory(conf)
     dummyStore = {
-
       value: null,
 
       get: function () {
-        return Promise.resolve(this.value);
+        return Promise.resolve(this.value)
       },
 
       put: function (val) {
-        this.value = val;
-        return Promise.resolve(val);
+        this.value = val
+        return Promise.resolve(val)
       }
-    };
-  });
+    }
+  })
 
   afterEach(function () {
-    nock.cleanAll();
-  });
+    nock.cleanAll()
+  })
 
   it('should throw an exception when cache configuration is wrong', function () {
-
     var c = {
       store: {
-        put: function () {
-
-        }
+        put: function () {}
       }
-    };
-
-    try {
-      service = cache(c, service);
-      assert.fail('should not get here');
-    } catch (e) {
-      assert.equal(e.message, 'the store must implement both get and put functions');
     }
 
-  });
+    try {
+      service = cache(c, service)
+      assert.fail('should not get here')
+    } catch (e) {
+      assert.equal(e.message, 'the store must implement both get and put functions')
+    }
+  })
 
   it('should throw an exception if the service to decorate is not an instance of Oxr', function () {
-
     var c = {
       store: {
-        put: function () {
-
-        },
-        get: function () {
-
-        }
+        put: function () {},
+        get: function () {}
       }
-    };
-
-    try {
-      service = cache(c, {});
-      assert.fail('should not get here');
-    } catch (e) {
-      assert.equal(e.message, 'the service to decorate must implement latest');
     }
 
-  });
+    try {
+      service = cache(c, {})
+      assert.fail('should not get here')
+    } catch (e) {
+      assert.equal(e.message, 'the service to decorate must implement latest')
+    }
+  })
 
   it('should cache the value from the remote service', function (done) {
-
-    var timestamp = Date.now() - 1000;
+    var timestamp = Date.now() - 1000
 
     var body = {
-      "disclaimer": "Exchange rates provided by [...]",
-      "license": "Data collected and blended [...]",
-      "timestamp": timestamp,
-      "base": "USD",
-      "rates": {
-        "AED": 3.672626,
-        "AFN": 48.3775,
-        "ALL": 110.223333,
-        "AMD": 409.604993,
-        "YER": 215.035559,
-        "ZAR": 8.416205,
-        "ZMK": 4954.411262,
-        "ZWL": 322.355011
+      'disclaimer': 'Exchange rates provided by [...]',
+      'license': 'Data collected and blended [...]',
+      'timestamp': timestamp,
+      'base': 'USD',
+      'rates': {
+        'AED': 3.672626,
+        'AFN': 48.3775,
+        'ALL': 110.223333,
+        'AMD': 409.604993,
+        'YER': 215.035559,
+        'ZAR': 8.416205,
+        'ZMK': 4954.411262,
+        'ZWL': 322.355011
       }
-    };
+    }
 
     var api = nock('http://openexchangerates.org')
       .get('/api/latest.json?app_id=' + conf.appId)
-      .reply(200, body);
+      .reply(200, body)
 
-    service = cache({store: dummyStore}, service);
+    service = cache({store: dummyStore}, service)
 
     service.latest()
       .then(function (val) {
-        assert.equal(val.timestamp, body.timestamp);
-        assert.equal(dummyStore.value.timestamp, body.timestamp);
-        api.done();
-        done();
-      });
-  });
+        assert.equal(val.timestamp, body.timestamp)
+        assert.equal(dummyStore.value.timestamp, body.timestamp)
+        api.done()
+        done()
+      })
+  })
 
   it('should get the value from the cache if it has not expired', function (done) {
-    var timestamp = Date.now() - 1000;
+    var timestamp = Date.now() - 1000
 
     dummyStore.value = {
-      "disclaimer": "Exchange rates provided by [...]",
-      "license": "Data collected and blended [...]",
-      "timestamp": timestamp,
-      "base": "USD",
-      "rates": {
-        "AED": 3.672626,
-        "AFN": 48.3775,
-        "ALL": 110.223333,
-        "AMD": 409.604993,
-        "YER": 215.035559,
-        "ZAR": 8.416205,
-        "ZMK": 4954.411262,
-        "ZWL": 322.355011
+      'disclaimer': 'Exchange rates provided by [...]',
+      'license': 'Data collected and blended [...]',
+      'timestamp': timestamp,
+      'base': 'USD',
+      'rates': {
+        'AED': 3.672626,
+        'AFN': 48.3775,
+        'ALL': 110.223333,
+        'AMD': 409.604993,
+        'YER': 215.035559,
+        'ZAR': 8.416205,
+        'ZMK': 4954.411262,
+        'ZWL': 322.355011
       }
-    };
+    }
 
-    service = cache({store: dummyStore}, service);
+    service = cache({store: dummyStore}, service)
 
     service.latest()
       .then(function (val) {
-        assert.equal(val.timestamp, dummyStore.value.timestamp);
-        done();
-      });
-  });
+        assert.equal(val.timestamp, dummyStore.value.timestamp)
+        done()
+      })
+  })
 
   it('should refresh the value of the cache if the value has expired', function (done) {
-    var timestamp = Date.now() / 1000 - 1000;
+    var timestamp = Date.now() / 1000 - 1000
 
     var body = {
-      "disclaimer": "Exchange rates provided by [...]",
-      "license": "Data collected and blended [...]",
-      "timestamp": timestamp,
-      "base": "USD",
-      "rates": {
-        "AED": 3.672626,
-        "AFN": 48.3775,
-        "ALL": 110.223333,
-        "AMD": 409.604993,
-        "YER": 215.035559,
-        "ZAR": 8.416205,
-        "ZMK": 4954.411262,
-        "ZWL": 322.355011
+      'disclaimer': 'Exchange rates provided by [...]',
+      'license': 'Data collected and blended [...]',
+      'timestamp': timestamp,
+      'base': 'USD',
+      'rates': {
+        'AED': 3.672626,
+        'AFN': 48.3775,
+        'ALL': 110.223333,
+        'AMD': 409.604993,
+        'YER': 215.035559,
+        'ZAR': 8.416205,
+        'ZMK': 4954.411262,
+        'ZWL': 322.355011
       }
-    };
+    }
 
-    dummyStore.value = body;
+    dummyStore.value = body
 
     var api = nock('http://openexchangerates.org')
       .get('/api/latest.json?app_id=' + conf.appId)
-      .reply(200, body);
+      .reply(200, body)
 
-    service = cache({store: dummyStore, ttl: 200}, service);
+    service = cache({store: dummyStore, ttl: 200}, service)
 
     service.latest()
       .then(function (val) {
-        assert.equal(val.timestamp, body.timestamp);
-        assert.equal(dummyStore.value.timestamp, body.timestamp);
-        api.done();
-        done();
-      });
-  });
+        assert.equal(val.timestamp, body.timestamp)
+        assert.equal(dummyStore.value.timestamp, body.timestamp)
+        api.done()
+        done()
+      })
+  })
 
   it('should default to cache if an error is returned from the remote', function (done) {
-    var timestamp = Date.now() / 1000 - 1000;
+    var timestamp = Date.now() / 1000 - 1000
 
     var body = {
-      "disclaimer": "Exchange rates provided by [...]",
-      "license": "Data collected and blended [...]",
-      "timestamp": timestamp,
-      "base": "USD",
-      "rates": {
-        "AED": 3.672626,
-        "AFN": 48.3775,
-        "ALL": 110.223333,
-        "AMD": 409.604993,
-        "YER": 215.035559,
-        "ZAR": 8.416205,
-        "ZMK": 4954.411262,
-        "ZWL": 322.355011
+      'disclaimer': 'Exchange rates provided by [...]',
+      'license': 'Data collected and blended [...]',
+      'timestamp': timestamp,
+      'base': 'USD',
+      'rates': {
+        'AED': 3.672626,
+        'AFN': 48.3775,
+        'ALL': 110.223333,
+        'AMD': 409.604993,
+        'YER': 215.035559,
+        'ZAR': 8.416205,
+        'ZMK': 4954.411262,
+        'ZWL': 322.355011
       }
-    };
+    }
 
-    dummyStore.value = body;
+    dummyStore.value = body
 
     var api = nock('http://openexchangerates.org')
       .get('/api/latest.json?app_id=' + conf.appId)
@@ -269,21 +258,21 @@ describe('Cache latest', function () {
         description: 'some description',
         status: 400,
         message: 'some error'
-      });
+      })
 
-    service = cache({store: dummyStore, ttl: 200}, service);
+    service = cache({store: dummyStore, ttl: 200}, service)
 
     service.latest()
       .then(function (val) {
-        assert.equal(val.timestamp, dummyStore.value.timestamp);
-        api.done();
-        done();
-      });
-  });
+        assert.equal(val.timestamp, dummyStore.value.timestamp)
+        api.done()
+        done()
+      })
+  })
 
   it('should rely on Etag value', function (done) {
-    //todo
-    done();
-  });
+    // todo
+    done()
+  })
 
-});
+})
