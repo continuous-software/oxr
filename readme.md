@@ -2,105 +2,103 @@
 
 #Open-exchange-rates-promise
 
-A nodejs client factory for [open exchange rates](https://openexchangerates.org) API. API designed to return Promises, and possibility to plug a cache on top of it
+A Node.js client for the [Open Exchange Rates](https://openexchangerates.org) API.  
+Our client is designed to return Promises and provide a flexible caching feature.
 
-##Install
+## Install
 
 `npm install --save open-exchange-rates-promise`
 
 ## Usage
 
-Use the factory to create any number of client instances using your api keys
+Use the factory to create any number of client instances using your API keys
 
-```Javascript
+```javascript
+var oxr = require('open-exchange-rates-promise').factory
+var service = oxr({
+  appId: process.env.OXR_APP_ID || '<YOUR_APP_ID>'
+});
 
-var oxr=require('open-exchange-rates-promise').factory;
-
-var service=oxr({appId:'your app id'});
-
-service.latest()
-  .then(function(result){
-
+service.latest().then(function(result){
   //do some stuff with the response from the openexchangerate.org api
-  //var rates=result.rates etc
-
-  });
+  var rates = result.rates
+  console.log(rates);
+});
 
 ```
 
 ## Error Handling
 
-If the remote service returns an error, the promise is rejected with an instance of OxrError
+If the remote service returns an error, Promises are rejected with an instance of OxrError.
 
-```Javascript
+```javascript
+var oxr = require('open-exchange-rates-promise').factory
+var OxrError = require('open-exchange-rates-promise').OxrError
+var service = oxr({
+  appId: '<WRONG_APP_ID>'
+})
 
-var oxr=require('open-exchange-rates-promise').factory;
-var OxrError=require('open-exchange-rates-promise').OxrError;
-
-var service=oxr({appId:'wrong api key'});
-
-service.latest()
-  .then(function(result){
-  })
-  .catch(function(err){
-      assert(err instanceof oxr.OxrError);
-      assert.equal(err.status, 401);
-      assert.equal(err.message, 'invalid_app_id');
-      assert.equal(err.description, 'Invalid App ID provided - please sign up at https://openexchangerates.org/signup, or contact support@openexchangerates.org. Thanks!');
-  });
-
+service.latest().catch(function (error) {
+      assert(error instanceof oxr.OxrError)
+      assert.equal(error.status, 401)
+      assert.equal(error.message, 'invalid_app_id')
+      assert.equal(error.description, 'Invalid App ID provided - please sign up at https://openexchangerates.org/signup, or contact support@openexchangerates.org. Thanks!')
+})
 ```
 
-##Service API
+## Service API
 
-* latest(query, options) :
-@params query - optional, a map of query string parameters to pass to the http call
-@params options - optional, an object to merge with the http options sent to the remote API
-@returns a promise with the latest rates from openexchangerates.org if resolved, reject with an Instance if the remote API returns an error response or with a standard Error otherwise.
+* [latest(query, options)]()
+* [historical(date, query, options)]()
+* [currencies(query, options)]()
 
-* historical(date, query, options)
-@params date - Date object or a String which would result in a valid Date object if called with the Date constructor
-@params query - optional, a map of query string parameters to pass to the http call
-@params options - optional, an object to merge with the http options sent to the remote API
-@returns a promise with the rates at the requested date from openexchangerates.org if resolved, reject with an Instance if the remote API returns an error response or with a standard Error otherwise.
+### latest(query, options)  
+**@params query** *(optional)* - A map of query string parameters to pass to the http call.  
+**@params options** *(optional)*- An object to merge with the http options sent to the remote API.  
+**@returns** - A promise with the latest rates from openexchangerates.org if resolved, reject with an Instance if the remote API returns an error response or with a standard Error otherwise.
 
-* currencies(query, options)
-@params query - optional, a map of query string parameters to pass to the http call
-@params options - optional, an object to merge with the http options sent to the remote API
-@returns a promise with the list of currency codes from openexchangerates.org if resolved, reject with an Instance if the remote API returns an error response or with a standard Error otherwise.
+### historical(date, query, options)  
+**@params date** - Date object or a String which would result in a valid Date object if called with the Date constructor.  
+**@params query** *(optional)* - A map of query string parameters to pass to the http call.  
+**@params options** *(optional)* - An object to merge with the http options sent to the remote API.  
+**@returns** - A promise with the rates at the requested date from openexchangerates.org if resolved, reject with an Instance if the remote API returns an error response or with a standard Error otherwise.
 
-##Cache decorator
+### currencies(query, options)  
+**@params query** *(optional)* - A map of query string parameters to pass to the http call.  
+**@params options** *(optional)* - An object to merge with the http options sent to the remote API.  
+**@returns** - A promise with the list of currency codes from openexchangerates.org if resolved, reject with an Instance if the remote API returns an error response or with a standard Error otherwise.
 
-You can also decorate your service with a cache. It must implement a <strong>get</strong> function and a <strong>put</strong> function which return promises
+## Cache
 
- ```Javascript
+You can also decorate your service with a cache.  
+It must implement a **get** and a **put** functions which return Promises.
 
-var dummyStore={
-  get:function(){
-    return Promise.resolve(this.value);
+ ```javascript
+var oxr = require('open-exchange-rates-promise');
+var service = oxr.factory({
+  appId: process.env.OXR_APP_ID || '<YOUR_APP_ID>'
+});
+
+service = oxr.cache({
+  store: {
+    get: function () {
+      return Promise.resolve(this.value)
+    },
+    put: function (value) {
+      this.value = value
+      return Promise.resolve(this.value)
+    }
   },
+  ttl: 7 * 24 * 1000 * 3600
+}, service);
+```
 
-  put:function(val){
-    this.value=val;
-    return Promise.resolve(this.value);
-  }
-}
-
-var oxr=require('open-exchange-rates-promise');
-
-var service = oxr.factory({appId:'APP_ID'});
-service = oxr.cache({store:dummyStore,ttl:7*24*1000*3600}, service);
-
- ```
-If the timestamp of the cached rates plus its time to live (ttl) in ms is higher than the current timestamp, the service will call the remote api,
-otherwise, it will take the value from the cache.
-
-Note: If an error is returned from the remote API, the service will fallback to the cached value if any, even if the cache has expired
-
+If the timestamp of the cached rates plus its time to live (ttl) in ms is higher than the current timestamp, the service will call the remote api, otherwise, it will take the value from the cache.  
+**Note:** If an error is returned from the remote API, the service will fallback to the cached value if any, even if the cache has expired.
 
 ## License
 
-open-exchange-rates-promise module is under MIT license:
+This module is distributed under the MIT license.
 
 > Copyright (C) 2014 Laurent Renard.
 >
