@@ -2,7 +2,6 @@
 
 /* global describe, beforeEach, it, afterEach */
 
-var conf = require('../conf.js')
 var oxr = require('../index.js')
 var assert = require('assert')
 var cache = require('../lib/cache.js')
@@ -14,34 +13,36 @@ describe('Open exchange rate promise service', function () {
 
   beforeEach(function () {
     service = oxr.factory({
-      appId: process.env.OXR_APP_ID,
-      protocol: process.env.OXR_PROTOCOL
+      appId: process.env.OXR_APP_ID || '<YOUR_APP_ID>',
+      protocol: process.env.OXR_PROTOCOL || 'https'
     })
   })
 
   it('should get the latest rates', function (done) {
-    service.latest()
-      .then(function (results) {
-        assert(results.disclaimer)
-        assert(results.license)
-        assert(results.base)
-        assert(results.rates)
-        assert(results.timestamp)
-        done()
-      })
+    service.latest().then(function (results) {
+      assert(results.disclaimer)
+      assert(results.license)
+      assert(results.base)
+      assert(results.rates)
+      assert(results.timestamp)
+      done()
+    }).catch(function (error) {
+      done(error)
+    })
   })
 
   it('parse API error response', function (done) {
-    service.latest({app_id: 'alsdkfjs'})
-      .then(function () {
-        throw new Error('should not get here')
-      }, function (err) {
-        assert(err instanceof oxr.OxrError)
-        assert.equal(err.status, 401)
-        assert.equal(err.message, 'invalid_app_id')
-        assert.equal(err.description, 'Invalid App ID provided - please sign up at https://openexchangerates.org/signup, or contact support@openexchangerates.org. Thanks!')
-        done()
-      })
+    service.latest({
+      app_id: '<INVALID_APP_ID>'
+    }).then(function () {
+      done('should not get here')
+    }, function (err) {
+      assert(err instanceof oxr.OxrError)
+      assert.equal(err.status, 401)
+      assert.equal(err.message, 'invalid_app_id')
+      assert.equal(err.description, 'Invalid App ID provided - please sign up at https://openexchangerates.org/signup, or contact support@openexchangerates.org. Thanks!')
+      done()
+    })
   })
 
   it('should get historical data with a date object', function (done) {
@@ -52,28 +53,31 @@ describe('Open exchange rate promise service', function () {
         assert(results.base)
         assert(results.rates)
         done()
+      }).catch(function (error) {
+        done(error)
       })
   })
 
   it('should get historical data with a string', function (done) {
-    service.historical('2013-12-29')
-      .then(function (results) {
-        assert(results.disclaimer)
-        assert(results.license)
-        assert(results.base)
-        assert(results.rates)
-        done()
-      })
+    service.historical('2013-12-29').then(function (results) {
+      assert(results.disclaimer)
+      assert(results.license)
+      assert(results.base)
+      assert(results.rates)
+      done()
+    }).catch(function (error) {
+      done(error)
+    })
   })
 
   it('should get the list of currencies', function (done) {
-    service.currencies()
-      .then(function (results) {
-        assert(results['USD'])
-        done()
-      })
+    service.currencies().then(function (results) {
+      assert(results['USD'])
+      done()
+    }).catch(function (error) {
+      done(error)
+    })
   })
-
 })
 
 describe('Cache latest', function () {
@@ -81,7 +85,10 @@ describe('Cache latest', function () {
   var dummyStore
 
   beforeEach(function () {
-    service = oxr.factory(conf)
+    service = oxr.factory({
+      appId: process.env.OXR_APP_ID || '<YOUR_APP_ID>',
+      protocol: process.env.OXR_PROTOCOL || 'https'
+    })
     dummyStore = {
       value: null,
 
@@ -152,18 +159,22 @@ describe('Cache latest', function () {
     }
 
     var api = nock('http://openexchangerates.org')
-      .get('/api/latest.json?app_id=' + conf.appId)
+      .get('/api/latest.json?app_id=' + service.appId)
       .reply(200, body)
 
-    service = cache({store: dummyStore}, service)
+    service = cache({
+      store: dummyStore
+    }, service)
 
-    service.latest()
-      .then(function (val) {
-        assert.equal(val.timestamp, body.timestamp)
-        assert.equal(dummyStore.value.timestamp, body.timestamp)
-        api.done()
-        done()
-      })
+    service.latest().then(function (val) {
+      console.log(body)
+      assert.equal(val.timestamp, body.timestamp)
+      assert.equal(dummyStore.value.timestamp, body.timestamp)
+      api.done()
+      done()
+    }).catch(function (error) {
+      done(error)
+    })
   })
 
   it('should get the value from the cache if it has not expired', function (done) {
@@ -186,13 +197,16 @@ describe('Cache latest', function () {
       }
     }
 
-    service = cache({store: dummyStore}, service)
+    service = cache({
+      store: dummyStore
+    }, service)
 
-    service.latest()
-      .then(function (val) {
-        assert.equal(val.timestamp, dummyStore.value.timestamp)
-        done()
-      })
+    service.latest().then(function (val) {
+      assert.equal(val.timestamp, dummyStore.value.timestamp)
+      done()
+    }).catch(function (error) {
+      done(error)
+    })
   })
 
   it('should refresh the value of the cache if the value has expired', function (done) {
@@ -218,18 +232,22 @@ describe('Cache latest', function () {
     dummyStore.value = body
 
     var api = nock('http://openexchangerates.org')
-      .get('/api/latest.json?app_id=' + conf.appId)
+      .get('/api/latest.json?app_id=' + service.appId)
       .reply(200, body)
 
-    service = cache({store: dummyStore, ttl: 200}, service)
+    service = cache({
+      store: dummyStore,
+      ttl: 200
+    }, service)
 
-    service.latest()
-      .then(function (val) {
-        assert.equal(val.timestamp, body.timestamp)
-        assert.equal(dummyStore.value.timestamp, body.timestamp)
-        api.done()
-        done()
-      })
+    service.latest().then(function (val) {
+      assert.equal(val.timestamp, body.timestamp)
+      assert.equal(dummyStore.value.timestamp, body.timestamp)
+      api.done()
+      done()
+    }).catch(function (error) {
+      done(error)
+    })
   })
 
   it('should default to cache if an error is returned from the remote', function (done) {
@@ -255,7 +273,7 @@ describe('Cache latest', function () {
     dummyStore.value = body
 
     var api = nock('http://openexchangerates.org')
-      .get('/api/latest.json?app_id=' + conf.appId)
+      .get('/api/latest.json?app_id=' + service.appId)
       .reply(200, {
         error: true,
         description: 'some description',
@@ -263,14 +281,18 @@ describe('Cache latest', function () {
         message: 'some error'
       })
 
-    service = cache({store: dummyStore, ttl: 200}, service)
+    service = cache({
+      store: dummyStore,
+      ttl: 200
+    }, service)
 
-    service.latest()
-      .then(function (val) {
-        assert.equal(val.timestamp, dummyStore.value.timestamp)
-        api.done()
-        done()
-      })
+    service.latest().then(function (val) {
+      assert.equal(val.timestamp, dummyStore.value.timestamp)
+      api.done()
+      done()
+    }).catch(function (error) {
+      done(error)
+    })
   })
 
   it('should rely on Etag value', function (done) {
