@@ -1,6 +1,6 @@
 {
   "name": "oxr",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "wrapper around open exchange rate using promise",
   "main": "index.js",
   "scripts": {
