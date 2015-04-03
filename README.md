@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.org/continuous-software/open-exchange-rate-promise.svg?branch=master)](https://travis-ci.org/continuous-software/open-exchange-rate-promise)
+![Build Status](https://img.shields.io/travis/continuous-software/open-exchange-rate-promise.svg) ![Coverage Status](https://img.shields.io/coveralls/continuous-software/open-exchange-rate-promise.svg) ![Dependencies Status](https://img.shields.io/david/continuous-software/open-exchange-rate-promise.svg)
 
-#Open-exchange-rates-promise
+# Open Exchange Rates +
 
 A Node.js client for the [Open Exchange Rates](https://openexchangerates.org) API.  
-Our client is designed to return Promises and provide a flexible caching feature.
+Our client is designed to return Promises and provide a flexible caching capability.
 
 ## Install
 
