@@ -14,36 +14,16 @@ Our client is designed to return Promises and provide a flexible caching capabil
 Use the factory to create any number of client instances using your API keys
 
 ```javascript
-var oxr = require('oxr').factory
-var service = oxr({
+var oxr = require('oxr')
+var service = oxr.factory({
   appId: process.env.OXR_APP_ID || '<YOUR_APP_ID>'
 });
 
 service.latest().then(function(result){
-  //do some stuff with the response from the openexchangerate.org api
   var rates = result.rates
   console.log(rates);
 });
 
-```
-
-## Error Handling
-
-If the remote service returns an error, Promises are rejected with an instance of OxrError.
-
-```javascript
-var oxr = require('oxr').factory
-var OxrError = require('oxr').OxrError
-var service = oxr({
-  appId: '<WRONG_APP_ID>'
-})
-
-service.latest().catch(function (error) {
-      assert(error instanceof oxr.OxrError)
-      assert.equal(error.status, 401)
-      assert.equal(error.message, 'invalid_app_id')
-      assert.equal(error.description, 'Invalid App ID provided - please sign up at https://openexchangerates.org/signup, or contact support@openexchangerates.org. Thanks!')
-})
 ```
 
 ## Service API
@@ -95,6 +75,25 @@ service = oxr.cache({
 
 If the timestamp of the cached rates plus its time to live (ttl) in ms is higher than the current timestamp, the service will call the remote api, otherwise, it will take the value from the cache.  
 **Note:** If an error is returned from the remote API, the service will fallback to the cached value if any, even if the cache has expired.
+
+
+## Error Handling
+
+If the remote service returns an error, Promises are rejected with an instance of OxrError.
+
+```javascript
+var oxr = require('oxr')
+var service = oxr.factory({
+  appId: '<WRONG_APP_ID>'
+})
+
+service.latest().catch(function (error) {
+  assert(error instanceof oxr.OxrError)
+  assert.equal(error.status, 401)
+  assert.equal(error.message, 'invalid_app_id')
+  assert.equal(error.description, 'Invalid App ID provided - please sign up at https://openexchangerates.org/signup, or contact support@openexchangerates.org. Thanks!')
+})
+```
 
 ## License
 
