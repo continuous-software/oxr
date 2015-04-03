@@ -1,4 +1,4 @@
-![Build Status](https://img.shields.io/travis/continuous-software/oxr.svg) ![Coverage Status](https://img.shields.io/coveralls/continuous-software/oxr.svg) ![Dependencies Status](https://img.shields.io/david/continuous-software/oxr.svg) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
+[![Build Status](https://travis-ci.org/continuous-software/oxr.svg?branch=master)](https://travis-ci.org/continuous-software/oxr) [![Coverage Status](https://coveralls.io/repos/continuous-software/oxr/badge.svg?branch=master)](https://coveralls.io/r/continuous-software/oxr?branch=master) ![Dependencies Status](https://img.shields.io/david/continuous-software/oxr.svg)
 
 # Open eXchange Rates
 
