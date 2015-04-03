@@ -8,6 +8,8 @@ var cache = require('../lib/cache.js')
 var Promise = require('bluebird')
 var nock = require('nock')
 
+nock.enableNetConnect('openexchangerates.org')
+
 describe('Open exchange rate promise service', function () {
   var service
 
