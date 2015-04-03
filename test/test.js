@@ -13,7 +13,10 @@ describe('Open exchange rate promise service', function () {
   var service
 
   beforeEach(function () {
-    service = oxr.factory(conf)
+    service = oxr.factory({
+      appId: process.env.OXR_APP_ID,
+      protocol: process.env.OXR_PROTOCOL
+    })
   })
 
   it('should get the latest rates', function (done) {
