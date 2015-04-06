@@ -8,10 +8,14 @@ var cache = require('../lib/cache.js')
 var Promise = require('bluebird')
 var nock = require('nock')
 
+
 describe('Open exchange rate promise service', function () {
   var service
 
   beforeEach(function () {
+
+    nock.enableNetConnect('openexchangerates.org')
+
     service = oxr.factory({
       appId: process.env.OXR_APP_ID || '<YOUR_APP_ID>',
       protocol: process.env.OXR_PROTOCOL || 'https'
@@ -85,6 +89,9 @@ describe('Cache latest', function () {
   var dummyStore
 
   beforeEach(function () {
+
+    nock.disableNetConnect()
+
     service = oxr.factory({
       appId: process.env.OXR_APP_ID || '<YOUR_APP_ID>',
       protocol: process.env.OXR_PROTOCOL || 'https'
