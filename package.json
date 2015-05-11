@@ -23,6 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "^2.5.1",
+    "nock": "^2.0.1",
     "request": "^2.55.0"
   },
   "devDependencies": {
