@@ -22,9 +22,9 @@
   "author": "Laurent Renard",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^2.5.1",
-    "nock": "^2.0.1",
-    "request": "^2.55.0"
+    "bluebird": "^3.4.6",
+    "nock": "^9.0.2",
+    "request": "^2.78.0"
   },
   "devDependencies": {
     "coveralls": "^2.11.2",
