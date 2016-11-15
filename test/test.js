@@ -31,6 +31,7 @@ describe('Open exchange rate promise service', function () {
       assert(results.timestamp)
       done()
     }).catch(function (error) {
+      console.log('Error:', error)
       done(error)
     })
   })
@@ -44,7 +45,7 @@ describe('Open exchange rate promise service', function () {
       assert(err instanceof oxr.OxrError)
       assert.equal(err.status, 401)
       assert.equal(err.message, 'invalid_app_id')
-      assert.equal(err.description, 'Invalid App ID provided - please sign up at https://openexchangerates.org/signup, or contact support@openexchangerates.org. Thanks!')
+      assert.equal(err.description, 'Invalid App ID provided. Please sign up at https://openexchangerates.org/signup, or contact support@openexchangerates.org.')
       done()
     })
   })
