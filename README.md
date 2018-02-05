@@ -48,10 +48,23 @@ service.latest().then(function(result){
 **@params options** *(optional)* - An object to merge with the http options sent to the remote API.  
 **@returns** - A promise with the list of currency codes from openexchangerates.org if resolved, reject with an Instance if the remote API returns an error response or with a standard Error otherwise.
 
-## Cache
+## Cache Decorator
+You can also decorate the service methods with a cache.  
 
-You can also decorate your service with a cache.  
-It must implement a **get** and a **put** functions which return Promises.
+**@params method** *(optional)* - the method to decorate.<br>
+Defaults to *latest*
+
+**@params store**
+- **@params store.get(...methodArgs)** - called before a request is sent to the remote API, use this getter to retrieve a value from the cache. can resolve a promise.
+- **@params store.put(value, ...methodArgs)** - called after the request completed, use this setter to store the value in cache. can resolve a promise.
+
+**@params tll** *(optional)* - If the timestamp of the cached rates plus its time to live (ttl) in ms is higher than the current timestamp, the service will call the remote API, otherwise, it will take the value from the cache.<br>
+Defaults to 24 hours for *latest* and to Infinity for *currencies* and *historical*
+
+If an error returned from the remote API, the service will fall back to the cached value if any, even if the cache has expired.
+
+**@returns** - decorated service
+
 
  ```javascript
 var oxr = require('oxr')
@@ -60,6 +73,8 @@ var service = oxr.factory({
 })
 
 service = oxr.cache({
+  method: 'latest',
+  ttl: 7 * 24 * 1000 * 3600,
   store: {
     get: function () {
       return Promise.resolve(this.value)
@@ -68,13 +83,34 @@ service = oxr.cache({
       this.value = value
       return Promise.resolve(this.value)
     }
-  },
-  ttl: 7 * 24 * 1000 * 3600
+  }
 }, service)
 ```
 
-If the timestamp of the cached rates plus its time to live (ttl) in ms is higher than the current timestamp, the service will call the remote api, otherwise, it will take the value from the cache.  
-**Note:** If an error is returned from the remote API, the service will fallback to the cached value if any, even if the cache has expired.
+You can decorate the service more than once, with different cache strategy for each method
+```js
+service = oxr.cache({
+  method: 'historical',
+  store: {
+    cache: {},
+    get: function (date) {
+      return this.cache[date];
+    },
+    put: function (value, date) {
+      this.cache[date] = value;
+    }
+  }
+}, service)
+
+
+// note how the arguments that you pass to the decorated method
+// are also passed to `get` and `put`
+service.historical('2017-11-16')
+  .then((value) => { ... })
+```
+
+
+
 
 
 ## Error Handling
