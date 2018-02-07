@@ -85,7 +85,7 @@ describe('Open exchange rate promise service', function () {
   })
 })
 
-describe('Cache latest', function () {
+describe('Cache', function () {
   var service
   var dummyStore
 
@@ -130,8 +130,9 @@ describe('Cache latest', function () {
     }
   })
 
-  it('should throw an exception if the service to decorate is not an instance of Oxr', function () {
+  it('should throw an exception if method does not exists on the decorated service', function () {
     var c = {
+      method: 'historical',
       store: {
         put: function () {},
         get: function () {}
@@ -142,8 +143,42 @@ describe('Cache latest', function () {
       service = cache(c, {})
       assert.fail('should not get here')
     } catch (e) {
-      assert.equal(e.message, 'the service to decorate must implement latest')
+      assert.equal(e.message, 'the service to decorate must implement historical')
     }
+  })
+
+  it('should set defaults correctly', function () {
+    service = cache({
+      store: {
+        put: function () {},
+        get: function () {}
+      }
+    }, service);
+
+    debugger
+    assert(service.latest._cache, 'latest should be decorated when no other method name provided');
+    assert(service.latest._cache.ttl === 24 * 1000 * 3600, 'latest\'s ttl should default to one day');
+
+    service = cache({
+      method: 'historical',
+      store: dummyStore
+    }, service);
+
+    assert(
+      service.historical._cache.ttl === Infinity,
+      'methods other than latest should have default to ttl of Infinity'
+    );
+  })
+
+  it('should decorated the specified method with cache', function () {
+     service = cache({
+      method: 'currencies',
+      ttl: 12345,
+      store: dummyStore 
+    }, service);
+  
+    assert(service.currencies._cache.ttl === 12345);
+    assert(service.currencies._cache.method === 'currencies');
   })
 
   it('should cache the value from the remote service', function (done) {
