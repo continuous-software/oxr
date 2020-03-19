@@ -1,16 +1,9 @@
 language: node_js
 node_js:
-- 'lts/*'
+  - "lts/*"
 before_script:
-- npm install
+  - npm install
 script:
-- npm test
+  - npm test
 after_script:
-- npm run coveralls
-notifications:
-  hipchat:
-    rooms:
-      secure: BY68psYkTgJwlVzVzjIwc4c9w2CFn0tsC1jkj+dg+1mi1ReiC5S/e3HdW20YJ6WGutOc2MAkgMb7D3DwUKBgkoEF6M8tE0eI8dqWAMV5rSE+ORPOFtGVGkGmSMDtxG6IyMUCMljLkTpKLi6RxwSAE/4oz8vfhVOnJjTInAN/Kec=
-env:
-  global:
-    secure: RtBk967QTYOMKCtjR+pGBFABX29yU8R8D61q9JBTkWccMm+oUJ3lnerOY6A7HJodaravA76h2wO+VUmXeHm1BHDhPtYtUURJc/ZwoenvRBQgk8hzwr9xBE52/dF0wbK3Zl1h6krPpzgCZyl9GqHXk/SaFnEFPsthOrMegCo3cH8=
+  - npm run coveralls
