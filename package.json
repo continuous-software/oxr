@@ -4,7 +4,7 @@
   "description": "Advanced Node.js wrapper for the Open Exchange Rates API",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec",
+    "test": "npx nyc mocha --report lcovonly -- -R spec",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "keywords": [
@@ -23,14 +23,13 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "^3.4.6",
-    "nock": "^9.0.2",
     "request": "^2.78.0"
   },
   "devDependencies": {
-    "coveralls": "^2.11.2",
-    "istanbul": "^0.3.13",
-    "mocha": "^2.1.0",
-    "nock": "^1.4.0",
-    "standard": "^3.3.1"
+    "coveralls": "^3.0.9",
+    "mocha": "^7.1.1",
+    "nock": "^12.0.3",
+    "nyc": "^15.0.0",
+    "standard": "^14.3.3"
   }
 }
